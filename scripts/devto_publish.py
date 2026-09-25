@@ -106,9 +106,8 @@ def article_payload(front_matter, body):
     return {"article": article}
 
 
-def request_devto(method, api_key, payload, article_id=None):
-    url = DEVTO_API_URL if article_id is None else f"{DEVTO_API_URL}/{article_id}"
-    data = json.dumps(payload).encode("utf-8")
+def api_request(method, api_key, url, payload=None):
+    data = None if payload is None else json.dumps(payload).encode("utf-8")
     request = urllib.request.Request(
         url,
         data=data,
@@ -123,10 +122,39 @@ def request_devto(method, api_key, payload, article_id=None):
 
     try:
         with urllib.request.urlopen(request, timeout=30) as response:
-            return json.loads(response.read().decode("utf-8"))
+            raw = response.read().decode("utf-8")
+            return json.loads(raw) if raw else {}
     except urllib.error.HTTPError as error:
         details = error.read().decode("utf-8")
         raise RuntimeError(f"DEV.to API error {error.code}: {details}") from error
+
+
+def request_devto(method, api_key, payload, article_id=None):
+    url = DEVTO_API_URL if article_id is None else f"{DEVTO_API_URL}/{article_id}"
+    return api_request(method, api_key, url, payload)
+
+
+def find_article_by_title(api_key, title):
+    for collection in ("unpublished", "all"):
+        for page in range(1, 6):
+            url = f"{DEVTO_API_URL}/me/{collection}?page={page}&per_page=100"
+            articles = api_request("GET", api_key, url)
+            if not isinstance(articles, list) or not articles:
+                break
+
+            for article in articles:
+                if article.get("title") == title and article.get("id"):
+                    return article
+
+            if len(articles) < 100:
+                break
+
+    return None
+
+
+def save_article_id(path, front_matter, body, article_id):
+    front_matter["devto_id"] = article_id
+    path.write_text(render_front_matter(front_matter, body), encoding="utf-8")
 
 
 def publish_article(path, api_key):
@@ -140,13 +168,33 @@ def publish_article(path, api_key):
         print(f"Updated DEV.to article {devto_id}: {path}")
         return False, result
 
-    result = request_devto("POST", api_key, payload)
+    try:
+        result = request_devto("POST", api_key, payload)
+    except RuntimeError as error:
+        if "Title has already been used" not in str(error):
+            raise
+
+        existing = find_article_by_title(api_key, front_matter["title"])
+        if not existing:
+            raise
+
+        article_id = existing["id"]
+        save_article_id(path, front_matter, body, article_id)
+        print(f"Linked existing DEV.to article {article_id}: {path}")
+        try:
+            result = request_devto("PUT", api_key, payload, article_id=article_id)
+        except RuntimeError as update_error:
+            if "Title has already been used" not in str(update_error):
+                raise
+            print("DEV.to already has this draft. The id was saved for future updates.")
+            result = existing
+        return True, result
+
     new_id = result.get("id")
     if not new_id:
         raise RuntimeError(f"DEV.to did not return an article id for {path}")
 
-    front_matter["devto_id"] = new_id
-    path.write_text(render_front_matter(front_matter, body), encoding="utf-8")
+    save_article_id(path, front_matter, body, new_id)
     print(f"Created DEV.to article {new_id}: {path}")
     return True, result
 
