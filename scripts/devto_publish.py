@@ -117,6 +117,7 @@ def request_devto(method, api_key, payload, article_id=None):
             "api-key": api_key,
             "Content-Type": "application/json",
             "Accept": "application/json",
+            "User-Agent": "devto-publishing-workflow/1.0",
         },
     )
 
