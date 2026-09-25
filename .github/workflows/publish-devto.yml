@@ -1,0 +1,45 @@
+name: Publish Articles to DEV.to
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "articles/**/*.md"
+      - "scripts/devto_publish.py"
+      - ".github/workflows/publish-devto.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish Markdown articles
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Publish articles to DEV.to
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+        run: |
+          if [ -z "$DEVTO_API_KEY" ]; then
+            echo "::notice::Skipping DEV.to publishing because DEVTO_API_KEY is not configured."
+            exit 0
+          fi
+
+          python scripts/devto_publish.py
+
+      - name: Save DEV.to article ids
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: save DEV.to article ids"
+          file_pattern: articles/**/*.md
