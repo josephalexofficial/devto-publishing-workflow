@@ -74,7 +74,7 @@ articles/my-next-article.md
 
 Use the same front matter format, write the article, and push it to GitHub. The existing workflow will handle the rest.
 
-## Current Draft
+## Current Article
 
 The first article in this repository is:
 
