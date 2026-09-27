@@ -3,6 +3,7 @@ title: AI Agents Are Not Magic: A Beginner's Guide to How They Think, Use Tools,
 published: true
 description: A beginner-friendly guide to what AI agents are, how they work, and why they are becoming important in modern software development.
 tags: ai, beginners, productivity, agents
+devto_id: 4745226
 ---
 
 ## Introduction

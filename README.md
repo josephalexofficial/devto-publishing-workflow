@@ -74,8 +74,7 @@ articles/my-next-article.md
 
 Use the same front matter format, write the article, and push it to GitHub. The existing workflow will handle the rest.
 
-## Current Article
+## Published Articles
 
-The first article in this repository is:
-
-`AI Agents Are Not Magic: A Beginner's Guide to How They Think, Use Tools, and Get Things Done`
+- [AI Agents Are Not Magic: A Beginner's Guide to How They Think, Use Tools, and Get Things Done](https://dev.to/alexjosephke/ai-agents-are-not-magic-a-beginners-guide-to-how-they-think-use-tools-and-get-things-done-5g3j)
+- Design the Loop First: A Practical Guide to Building Workflows You Can Trust
