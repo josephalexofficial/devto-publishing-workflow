@@ -3,6 +3,7 @@ title: Design the Loop First: A Practical Guide to Building Workflows You Can Tr
 published: true
 description: A practical guide to designing workflows that stay reliable when a step fails, a tool changes, or a person has to run them again.
 tags: productivity, beginners, career, tutorial
+devto_id: 4757326
 ---
 
 ## Introduction
