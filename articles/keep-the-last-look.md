@@ -3,6 +3,7 @@ title: Keep the Last Look: A Practical Guide to Reviewing AI-Assisted Work
 published: true
 description: A practical guide to reviewing AI-assisted work so the final result matches the goal, the evidence, and the risks you are willing to accept.
 tags: ai, beginners, productivity, career
+devto_id: 4766223
 ---
 
 ## Introduction
