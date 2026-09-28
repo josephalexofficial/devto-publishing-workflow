@@ -78,4 +78,4 @@ Use the same front matter format, write the article, and push it to GitHub. The 
 
 - [AI Agents Are Not Magic: A Beginner's Guide to How They Think, Use Tools, and Get Things Done](https://dev.to/alexjosephke/ai-agents-are-not-magic-a-beginners-guide-to-how-they-think-use-tools-and-get-things-done-5g3j)
 - [Design the Loop First: A Practical Guide to Building Workflows You Can Trust](https://dev.to/alexjosephke/design-the-loop-first-a-practical-guide-to-building-workflows-you-can-trust-113n)
-- Keep the Last Look: A Practical Guide to Reviewing AI-Assisted Work
+- [Keep the Last Look: A Practical Guide to Reviewing AI-Assisted Work](https://dev.to/alexjosephke/keep-the-last-look-a-practical-guide-to-reviewing-ai-assisted-work-5g3g)
