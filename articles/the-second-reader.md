@@ -3,6 +3,7 @@ title: The Second Reader: A Practical Guide to Writing That Still Makes Sense La
 published: true
 description: A practical guide to writing technical work for the person who arrives later, without the meeting, the chat, or the private context.
 tags: beginners, productivity, career, tutorial
+devto_id: 4773673
 ---
 
 ## Introduction
