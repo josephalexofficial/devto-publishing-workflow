@@ -21,15 +21,35 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      - name: Choose articles to publish
+        id: choose
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "all=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "all=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          {
+            echo "files<<EOF"
+            git diff --name-only HEAD^ HEAD -- articles || true
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Publish articles to DEV.to
         env:
           DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          PUBLISH_ALL: ${{ steps.choose.outputs.all }}
+          CHANGED_ARTICLES: ${{ steps.choose.outputs.files }}
         run: |
           if [ -z "$DEVTO_API_KEY" ]; then
             echo "::notice::Skipping DEV.to publishing because DEVTO_API_KEY is not configured."

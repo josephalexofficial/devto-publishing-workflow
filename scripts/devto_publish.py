@@ -125,8 +125,10 @@ def api_request(method, api_key, url, payload=None):
             raw = response.read().decode("utf-8")
             return json.loads(raw) if raw else {}
     except urllib.error.HTTPError as error:
-        details = error.read().decode("utf-8")
-        raise RuntimeError(f"DEV.to API error {error.code}: {details}") from error
+        details = error.read().decode("utf-8", errors="replace").strip()
+        retry_after = error.headers.get("Retry-After")
+        extra = f" Retry after {retry_after} seconds." if retry_after else ""
+        raise RuntimeError(f"DEV.to API error {error.code}: {details}{extra}") from error
 
 
 def request_devto(method, api_key, payload, article_id=None):
@@ -199,35 +201,75 @@ def publish_article(path, api_key):
     return True, result
 
 
+def github_error(message):
+    compact = " ".join(str(message).split())
+    print(f"::error::{compact}")
+
+
+def list_articles():
+    if not ARTICLES_DIR.exists():
+        return []
+
+    return sorted(
+        path
+        for path in ARTICLES_DIR.rglob("*.md")
+        if not re.search(r"(^|[\\/])_", str(path.relative_to(ARTICLES_DIR)))
+    )
+
+
+def article_has_id(path):
+    front_matter, _ = parse_front_matter(path.read_text(encoding="utf-8"))
+    return bool(front_matter.get("devto_id"))
+
+
+def select_articles(article_paths):
+    publish_all = os.environ.get("PUBLISH_ALL", "").lower() == "true"
+    changed = {
+        line.strip().replace("\\", "/")
+        for line in os.environ.get("CHANGED_ARTICLES", "").splitlines()
+        if line.strip()
+    }
+
+    selected = []
+    for path in article_paths:
+        relative = path.relative_to(ROOT).as_posix()
+        if publish_all or relative in changed or not article_has_id(path):
+            selected.append(path)
+    return selected
+
+
 def main():
     api_key = os.environ.get("DEVTO_API_KEY")
     if not api_key:
         print("Missing DEVTO_API_KEY environment variable.", file=sys.stderr)
         return 1
 
-    if not ARTICLES_DIR.exists():
-        print("No articles directory found. Nothing to publish.")
-        return 0
-
-    article_paths = sorted(
-        path
-        for path in ARTICLES_DIR.rglob("*.md")
-        if not re.search(r"(^|[\\/])_", str(path.relative_to(ARTICLES_DIR)))
-    )
-
+    article_paths = list_articles()
     if not article_paths:
         print("No Markdown articles found.")
         return 0
 
+    selected = select_articles(article_paths)
+    if not selected:
+        print("No articles need publishing.")
+        return 0
+
     created_any = False
-    for path in article_paths:
-        created, _ = publish_article(path, api_key)
-        created_any = created_any or created
+    failures = 0
+    for path in selected:
+        relative = path.relative_to(ROOT).as_posix()
+        print(f"Publishing {relative}")
+        try:
+            created, _ = publish_article(path, api_key)
+            created_any = created_any or created
+        except Exception as error:
+            failures += 1
+            github_error(f"{relative}: {error}")
 
     if created_any:
         print("One or more new DEV.to article ids were written back to Markdown files.")
 
-    return 0
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":
