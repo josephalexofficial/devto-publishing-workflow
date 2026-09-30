@@ -80,4 +80,4 @@ Use the same front matter format, write the article, and push it to GitHub. The 
 - [Design the Loop First: A Practical Guide to Building Workflows You Can Trust](https://dev.to/alexjosephke/design-the-loop-first-a-practical-guide-to-building-workflows-you-can-trust-113n)
 - [Keep the Last Look: A Practical Guide to Reviewing AI-Assisted Work](https://dev.to/alexjosephke/keep-the-last-look-a-practical-guide-to-reviewing-ai-assisted-work-5g3g)
 - [The Second Reader: A Practical Guide to Writing That Still Makes Sense Later](https://dev.to/alexjosephke/the-second-reader-a-practical-guide-to-writing-that-still-makes-sense-later-3abo)
-- Finish the Small Version: A Practical Guide to Shipping Work You Can Stand Behind
+- [Finish the Small Version: A Practical Guide to Shipping Work You Can Stand Behind](https://dev.to/alexjosephke/finish-the-small-version-a-practical-guide-to-shipping-work-you-can-stand-behind-12ed)
