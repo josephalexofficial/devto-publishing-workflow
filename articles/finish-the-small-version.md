@@ -3,6 +3,7 @@ title: Finish the Small Version: A Practical Guide to Shipping Work You Can Stan
 published: true
 description: A practical guide to choosing a small, complete version of a piece of work so you can ship it, check it, and improve it on purpose.
 tags: beginners, productivity, career, tutorial
+devto_id: 4779092
 ---
 
 ## Introduction
