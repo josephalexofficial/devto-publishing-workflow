@@ -3,6 +3,7 @@ title: Leave a Thread: A Practical Guide to Pausing Work You Can Resume
 published: true
 description: A practical guide to pausing a piece of work so the next session can begin from a clear thread instead of a reconstruction.
 tags: beginners, productivity, career, tutorial
+devto_id: 4788764
 ---
 
 ## Introduction
